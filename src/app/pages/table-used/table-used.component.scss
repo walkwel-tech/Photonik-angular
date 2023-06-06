@@ -1,0 +1,246 @@
+.table-used-outer-cnt {
+    background-color: #F5F5F5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+
+    h1 {
+        padding-top: 60px;
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 30px;
+        line-height: 35px;
+        text-align: center;
+        color: #000;
+    }
+
+    .second-heading {
+        text-align: left;
+        width: 50%;
+        margin: 0 auto 16px auto;
+    }
+
+    mat-card {
+        margin: 0 auto;
+        width: 50%;
+        padding: 30px;
+
+        h2 {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 24px;
+            line-height: 28px;
+            color: #4A90B6;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #dbe9f0;
+        }
+
+        p {
+            color: #707070;
+            font-family: 'Roboto';
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        .solar-system {
+            padding-top: 16px;
+        }
+
+
+        .solar-using-benefits {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            .icon {
+                height: 12px;
+                width: 12px;
+                border-radius: 50%;
+                background-color: #45D7B8;
+            }
+
+            p {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    .load-table-outer-cnt {
+
+        table {
+            width: 100%;
+
+            .table-first-heading {
+                text-align: left;
+            }
+
+            th.mat-header-cell,
+            td.mat-cell,
+            td.mat-footer-cell {
+                border: none;
+            }
+
+            th {
+                height: 56px;
+                text-align: center;
+                background-color: #DBE9F0;
+                font-weight: 700;
+                color: #40474A;
+
+                .table-heading-col {
+                    display: flex;
+                    flex-direction: column;
+
+                    .summer {
+                        color: #FF8244;
+                        font-weight: 400;
+                        font-family: 'Roboto';
+                        font-style: normal;
+                        text-align: center;
+                        font-size: 10px;
+                    }
+
+                    .winter {
+                        color: #4A90B6;
+                    }
+
+                    .annual {
+                        color: #707070;
+                    }
+
+                    label {
+                        text-align: center;
+                        font-size: 12px;
+                    }
+                }
+            }
+
+            .footer {
+                font-weight: 700;
+                background-color: #DBE9F0;
+            }
+
+            td {
+                text-align: center;
+
+                input {
+                    // width: 100%;
+                    // min-width: 50px;
+                    width: 50px;
+                    border: 0.6px solid #e7e7e7;
+                    text-align: center;
+                    padding: 4px;
+                }
+
+
+                .appliances-heading {
+                    font-family: 'Roboto';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 12px;
+                    text-align: left;
+                    text-transform: uppercase;
+                    padding: 13px 0;
+                    line-height: 12px;
+                    color: #4A90B6;
+                }
+
+                .menu-list {
+                    border-bottom: 1px solid #DBE9F0;
+                    height: 30px;
+                    line-height: 100%;
+                    display: flex;
+                    align-items: center;
+
+                    mat-icon {
+                        font-size: 18px;
+                        color: #707070;
+                    }
+
+                }
+                .first-input{
+                    justify-content: flex-start !important;
+                    input{
+                        border: none !important;
+                    }
+                }
+                .element-value {
+                    display: flex;
+                    justify-content: center;
+                    font-family: 'Roboto';
+                    font-style: normal;
+                    font-weight: 400;
+                    font-size: 12px;
+                    height: 30px;
+                    line-height: 100%;
+                    display: flex;
+                    align-items: center;
+                    border-bottom: 1px solid #DBE9F0;
+                    color: #40474A;
+
+                    .first-child {
+                        width: 100%;
+                        text-align: left;
+                    }
+
+                    input {
+                        width: 50px;
+                        border: 0.6px solid#e7e7e7;
+                        text-align: center;
+                        padding: 4px;
+                    }
+
+                    mat-icon {
+                        border-radius: 50%;
+                        background-color: #92BCD2;
+                        color: white;
+                        font-size: 12px;
+                        height: 14px;
+                        width: 14px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin: 0px 6px;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+.add-row {
+
+    font-size: 11px;
+    font-weight: 400;
+
+    mat-icon {
+        margin-right: 8px;
+        border: 2px solid #707070;
+        border-radius: 4px;
+        height: 18px;
+        width: 18px;
+        font-size: 18px;
+        color: #707070;
+    }
+}
+
+::ng-deep .mat-menu-content:not(:empty) {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+.remove-row {
+    color: #FF8244;
+    font-size: 11px;
+    font-weight: 400;
+
+    mat-icon {
+        margin-right: 8px;
+        color: #FF8244;
+    }
+}

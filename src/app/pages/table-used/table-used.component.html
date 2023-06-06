@@ -1,0 +1,185 @@
+<div class="table-used-outer-cnt">
+    <app-header></app-header>
+    <h1>Off Grid Solar Load Table</h1>
+    <mat-card>
+        <h2>What are off grid solar load tables used for?</h2>
+        <p>Off Grid Solar Load Table
+            What are off grid solar load tables used for?
+            Off-grid solar load tables are used to estimate the amount of electricity that an off-grid solar system will
+            need to power a home or business. The tables list the wattage of common appliances and electronics, as well
+            as the average amount of time they are used each day. This information can be used to calculate the
+            daily load of a home or business, which can then be used to size the solar system accordingly.</p>
+
+        <p>Off-grid solar load tables are an important tool for anyone considering installing an off-grid solar system.
+            By using the tables, homeowners and businesses can ensure that they are installing a system that will meet
+            their energy needs.
+        </p>
+        <p> Here are some of the benefits of using off-grid solar load tables:</p>
+        <div class="solar-using-benefits" *ngFor="let item of benefitsList?.benefits">
+            <div class="icon"></div>
+            <p>{{item.title}}</p>
+        </div>
+        <p class="solar-system">If you are considering installing an off-grid solar system, be sure to use off-grid
+            solar load tables to help
+            you plan your project.</p>
+        <p>Here are some additional tips for using off-grid solar load tables:</p>
+        <div class="solar-using-benefits" *ngFor="let item of benefitsList?.additionalTips">
+            <div class="icon"></div>
+            <p>{{item.title}}</p>
+        </div>
+    </mat-card>
+
+    <h1 class="second-heading">Basic Load table</h1>
+
+    <form [formGroup]="mainForm">
+        <mat-card class="load-table-outer-cnt">
+            
+            <table mat-table formArrayName="tableRows" [dataSource]="tableDataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="appliances">
+                    <th class="table-first-heading" mat-header-cell *matHeaderCellDef>Appliances</th>
+                    <td mat-cell *matCellDef="let row; let rowIndex = index" [formGroupName]="rowIndex">
+                        <div class="element-value first-input">
+                            <input type="text" formControlName="appliances" matInput class="form-control" (keyup)="onChanges()" />
+                        </div>
+                    </td>
+                    <td class="footer" mat-footer-cell *matFooterCellDef> Total </td>
+                </ng-container>
+
+                <ng-container matColumnDef="qty">
+                    <th mat-header-cell *matHeaderCellDef>Qty</th>
+                    <td mat-cell *matCellDef="let row; let rowIndex = index" [formGroupName]="rowIndex">
+                        <div class="element-value">
+                            <div class="element-value">
+                                <mat-icon (click)="onIncrement('remove',row,rowIndex)">remove</mat-icon>
+                                <span> {{row.get("qty").value}}</span>
+                                <mat-icon (click)="onIncrement('add',row,rowIndex)">add</mat-icon>
+                            </div>
+                        </div>
+
+                    </td>
+                    <td class="footer" mat-footer-cell *matFooterCellDef></td>
+                </ng-container>
+
+                <ng-container matColumnDef="power">
+                    <th mat-header-cell *matHeaderCellDef>Power(W)</th>
+                    <td mat-cell *matCellDef="let row; let rowIndex = index" [formGroupName]="rowIndex">
+                        <div class="element-value">
+                            <input type="number" formControlName="power" class="form-control" (keyup)="onChanges()" />
+                        </div>
+                    </td>
+                    <td class="footer" mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="summerTimeHrs">
+                    <th class="table-heading-double" mat-header-cell *matHeaderCellDef>
+                        <div class="table-heading-col">
+                            <span class="summer">Summner</span>
+                            <label>Time(hrs)</label>
+                        </div>
+                    </th>
+                    <td mat-cell *matCellDef="let row; let rowIndex = index" [formGroupName]="rowIndex">
+                        <div class="element-value">
+                            <input type="number" formControlName="summerTimeHrs" class="form-control" (keyup)="onChanges()" />
+                        </div>
+                    </td>
+                    <td class="footer" mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="summerEnergyKwh">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <div class="table-heading-col">
+                            <span class="summer">Summner</span>
+                            <label>Energy(KWh)</label>
+                        </div>
+
+                    </th>
+                    <td mat-cell *matCellDef="let row; let rowIndex = index" [formGroupName]="rowIndex">
+                        <div class="element-value">
+                            {{row.get("qty").value*0.5*row.get("power").value*row.get("summerTimeHrs").value/1000}}
+                        </div>
+                    </td>
+                    <td class="footer" mat-footer-cell *matFooterCellDef> {{summerEnergyTotal}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="winterTimeKwh">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <div class="table-heading-col">
+                            <span class="summer winter">Winter</span>
+                            <label>Time(hrs)</label>
+                        </div>
+
+                    </th>
+                    <td mat-cell *matCellDef="let row; let rowIndex = index" [formGroupName]="rowIndex">
+                        <div class="element-value">
+                            <input type="number" formControlName="winterTimeKwh" class="form-control" (keyup)="onChanges()" />
+                        </div>
+                    </td>
+                    <td class="footer" mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="winterEnergyKwh">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <div class="table-heading-col">
+                            <label>Daily Average Consumption</label>
+                            <span class="summer winter">Winter</span>
+                            <label>Energy(KWh)</label>
+                        </div>
+                    </th>
+                    <td mat-cell *matCellDef="let row; let rowIndex = index" [formGroupName]="rowIndex">
+                        <div class="element-value">
+                            {{row.get("qty").value*0.5*row.get("power").value*row.get("winterTimeKwh").value/1000}}
+                        </div>
+                        <!-- <input formControlName="winterEnergyKwh" class="form-control" /> -->
+                    </td>
+                    <td class="footer" mat-footer-cell *matFooterCellDef>{{winterEnergyTotal}} </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="annualEnergyKwh">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <div class="table-heading-col">
+                            <span class="summer winter">Annual</span>
+                            <label>Energy(KWh)</label>
+                        </div>
+
+                    </th>
+                    <td mat-cell *matCellDef="let row; let rowIndex = index" [formGroupName]="rowIndex">
+                        <div class="element-value">
+                            {{ ((row.get("qty").value*0.5*row.get("power").value*row.get("summerTimeHrs").value/1000) +
+                            (row.get("qty").value*0.5*row.get("power").value*row.get("winterTimeKwh").value/1000) )/2}}
+                        </div>
+                    </td>
+                    <td class="footer" mat-footer-cell *matFooterCellDef> {{annualEnergyTotal}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="option">
+                    <th mat-header-cell *matHeaderCellDef>
+                    </th>
+                    <td mat-cell *matCellDef="let row; let rowIndex = index" [formGroupName]="rowIndex">
+                        <div class="menu-list">
+                            <mat-icon  mat-icon-button [matMenuTriggerFor]="menu"
+                            aria-label="Example icon-button with a menu"> {{row.get("option").value}}</mat-icon>
+                            <mat-menu #menu="matMenu">
+                                <button mat-menu-item class="add-row" (click)="addRow(mainForm)">
+                                    <mat-icon>add</mat-icon>
+                                    <span>Add new row</span>
+                                </button>
+                                <mat-divider></mat-divider>
+                                <button mat-menu-item class="remove-row">
+                                    <mat-icon>delete_outline</mat-icon>
+                                    <span>Remove</span>
+                                </button>
+                            </mat-menu>
+                        </div>
+                    </td>
+                    <td class="footer" mat-footer-cell *matFooterCellDef> {{annualEnergyTotal}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+            </table>
+        </mat-card>
+    </form>
+
+</div>

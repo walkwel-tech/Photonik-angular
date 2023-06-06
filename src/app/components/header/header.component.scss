@@ -1,0 +1,32 @@
+.header-outer-cnt {
+    height: 56px;
+    // width: 100%;
+    display: flex;
+    padding: 0 16px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    img{
+        height: 33px;
+    }
+    .right-tools {
+        display: flex;
+        gap: 24px;
+
+        .tools-inner-cnt {
+            mat-icon {
+                color: #757575;
+                cursor: pointer;
+            }
+
+            display: flex;
+            align-items: center;
+            color: #000;
+            font-family: "Roboto";
+            gap: 10px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+    }
+}
