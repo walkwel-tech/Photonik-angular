@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { PeriodicElement, SolarBenefitsAndAdditionalTips } from 'src/app/interfaces/table';
+
+
 const ELEMENT_DATA: PeriodicElement[] = [
   {
     appliances: { title: 'Kitchen General', value: ['Dishwasher', 'Fridge', 'Chest Freezer'] },
@@ -29,7 +30,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {
     appliances: { title: 'Cleaning / laundry', value: ['Washing Machine', 'Clothes Dryer'] },
     qty: { title: '', value: ['1', '2'] },
-    power: { title: '', value: ['3200', '2200'] },
+    power: { title: '', value: ['700', '700'] },
     summerTimeHrs: { title: '', value: ['0.5', '1'] },
     summerEnergyKwh: { title: '', value: ['1.6', '2.2'] },
     winterTimeKwh: { title: '', value: ['0.5', '1'] },
@@ -41,7 +42,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {
     appliances: { title: 'Heating / hot water', value: ['Revers Cylce Air Con 5kW', 'Hydronic Heating', 'Hot Water Heat Pump'] },
     qty: { title: '', value: ['1', '2', '7'] },
-    power: { title: '', value: ['3200', '2200', '45'] },
+    power: { title: '', value: ['1200', '3200', '550'] },
     summerTimeHrs: { title: '', value: ['0.5', '1', '0.3'] },
     summerEnergyKwh: { title: '', value: ['1.6', '2.2', '0.2'] },
     winterTimeKwh: { title: '', value: ['0.5', '1', '6.2'] },
@@ -52,8 +53,8 @@ const ELEMENT_DATA: PeriodicElement[] = [
   },
   {
     appliances: { title: 'Other', value: ['Lights LED'] },
-    qty: { title: '', value: ['1',] },
-    power: { title: '', value: ['1200',] },
+    qty: { title: '', value: ['4',] },
+    power: { title: '', value: ['10',] },
     summerTimeHrs: { title: '', value: ['1',] },
     summerEnergyKwh: { title: '', value: ['0.6',] },
     winterTimeKwh: { title: '', value: ['1',] },
@@ -71,76 +72,25 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class TableUsedComponent implements OnInit {
   benefitsList: SolarBenefitsAndAdditionalTips | undefined;
-  tableDataSource!: MatTableDataSource<AbstractControl>;
-  displayedColumns: string[] = [
-    'appliances',
-    'qty',
-    'power',
-    'summerTimeHrs',
-    'summerEnergyKwh',
-    'winterTimeKwh',
-    'winterEnergyKwh',
-    'annualEnergyKwh',
-    'option'
+  displayedColumns: string[] = ['appliances', 'qty', 'power', 'summerTimeHrs', 'summerEnergyKwh', 'winterTimeKwh', 'winterEnergyKwh', 'annualEnergyKwh', 'menu'
   ];
-
   dataSource = ELEMENT_DATA;
-  tableForm: FormArray | undefined;
-  mainForm!: FormGroup;
-
-  summerEnergyTotal: number = 0;
-  winterEnergyTotal: number = 0;
-  annualEnergyTotal: number = 0;
-
-  constructor(private fb: FormBuilder,) { }
+  tableForm!: FormGroup;
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.mainForm = this.fb.group({
-      
-      tableRows: this.fb.array([
-        this.fb.group({
-          appliances: ['Dishwasher'],
-          category: 'tesss',
-          qty: [1],
-          power: [1200],
-          summerTimeHrs: [1],
-          summerEnergyKwh: [],
-          winterTimeKwh: [1],
-          winterEnergyKwh: [],
-          annualEnergyKwh: [],
-          option: ['more_vert']
-
-        }),
-        this.fb.group({
-          appliances: ['Plate'],
-          qty: [1],
-          power: [1500],
-          summerTimeHrs: [1],
-          summerEnergyKwh: [],
-          winterTimeKwh: [1],
-          winterEnergyKwh: [],
-          annualEnergyKwh: [],
-          option: ['more_vert']
-        }),
-        this.fb.group({
-          appliances: ['Plate'],
-          qty: [1],
-          power: [1500],
-          summerTimeHrs: [1],
-          summerEnergyKwh: [],
-          winterTimeKwh: [1],
-          winterEnergyKwh: [],
-          annualEnergyKwh: [],
-          option: ['more_vert']
-        }),
-
-      ]),
-    });
-
-    this.tableDataSource = new MatTableDataSource(
-      (this.mainForm.get('tableRows') as FormArray).controls
-    );
-    this.onChanges();
+    this.tableForm = this.fb.group({
+      appliances: this.fb.group({
+        kitchenGeneral: this.fb.array([])
+      }),
+      qty: new FormControl(''),
+      power: new FormControl(''),
+      summerTimeHrs: new FormControl(''),
+      summerEnergyKwh: new FormControl(''),
+      winterTimeKwh: new FormControl(''),
+      winterEnergyKwh: new FormControl(''),
+      annualEnergyKwh: new FormControl(''),
+    })
     this.benefitsList = {
       benefits: [
         { title: 'They can help you estimate the size of the solar system you need.' },
@@ -155,64 +105,14 @@ export class TableUsedComponent implements OnInit {
       ]
     }
   }
-  onIncrement(event: string, row: any, index: number) {
-    let a = this.mainForm.get('tableRows') as FormArray;
-    if (event === 'add') {
-      a.controls[index].patchValue({
-        qty: row.value.qty += 1
-      })
-    } else {
-      a.controls[index].patchValue({
-        qty: row.value.qty -= 1
-      })
-    }
-    this.onChanges()
-  }
-
-  createItem(): FormGroup {
-    return this.fb.group({
-      appliances: ['Plate'],
-      qty: [1],
-      power: [1500],
-      summerTimeHrs: [1],
-      summerEnergyKwh: [],
-      winterTimeKwh: [1],
-      winterEnergyKwh: [],
-      annualEnergyKwh: [],
-      option: ['more_vert']
-    });
-  }
-
-  addRow(group: FormGroup) {
-    const items = this.mainForm.get('tableRows') as FormArray;
-    items.push(this.createItem());
-  }
-  
-  onChanges(event?: string, row?: any) {
-
-    let a = this.mainForm.get('tableRows') as FormArray;
-
-    this.summerEnergyTotal = a.controls
-      .map(
-        (t: any) =>
-          (t.value.qty * t.value.power * 0.5 * t.value.summerTimeHrs) / 1000
-      )
-      .reduce((acc: any, value: any) => acc + value, 0);
-
-    this.winterEnergyTotal = a.controls
-      .map(
-        (t: any) =>
-          (t.value.qty * t.value.power * 0.5 * t.value.winterTimeKwh) / 1000
-      )
-      .reduce((acc: any, value: any) => acc + value, 0);
-
-    this.annualEnergyTotal = a.controls
-      .map(
-        (t: any) =>
-          (((t.value.qty * t.value.power * 0.5 * t.value.summerTimeHrs) / 1000) +
-            ((t.value.qty * t.value.power * 0.5 * t.value.winterTimeKwh) / 1000)) / 2
-      )
-      .reduce((acc: any, value: any) => acc + value, 0);
+  onRemove() {
 
   }
+  onAdd() {
+
+  }
+  getTotalCost() {
+    return 22;
+  }
+
 }

@@ -1,4 +1,5 @@
 .table-used-outer-cnt {
+    // height: 100%;
     background-color: #F5F5F5;
     display: flex;
     flex-direction: column;
@@ -72,24 +73,13 @@
 
         table {
             width: 100%;
-
-            .table-first-heading {
+            .table-first-heading{
                 text-align: left;
             }
-
-            th.mat-header-cell,
-            td.mat-cell,
-            td.mat-footer-cell {
-                border: none;
-            }
-
             th {
-                height: 56px;
                 text-align: center;
-                background-color: #DBE9F0;
                 font-weight: 700;
                 color: #40474A;
-
                 .table-heading-col {
                     display: flex;
                     flex-direction: column;
@@ -118,6 +108,13 @@
                 }
             }
 
+            th.mat-header-cell,
+            td.mat-cell,
+            td.mat-footer-cell {
+                border: none;
+            }
+
+
             .footer {
                 font-weight: 700;
                 background-color: #DBE9F0;
@@ -125,16 +122,6 @@
 
             td {
                 text-align: center;
-
-                input {
-                    // width: 100%;
-                    // min-width: 50px;
-                    width: 50px;
-                    border: 0.6px solid #e7e7e7;
-                    text-align: center;
-                    padding: 4px;
-                }
-
 
                 .appliances-heading {
                     font-family: 'Roboto';
@@ -161,12 +148,7 @@
                     }
 
                 }
-                .first-input{
-                    justify-content: flex-start !important;
-                    input{
-                        border: none !important;
-                    }
-                }
+
                 .element-value {
                     display: flex;
                     justify-content: center;
