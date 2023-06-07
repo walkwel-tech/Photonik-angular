@@ -207,8 +207,6 @@ export class TableUsedComponent implements OnInit {
     return item.value.isGroupBy;
   }
   onIncrement(event: string, row: any, index: number) {
-    console.log("roww", row);
-
     let a = this.mainForm.get('tableRows') as FormArray;
     if (event === 'add') {
       a.controls[index].patchValue({
