@@ -152,7 +152,7 @@ export class TableUsedComponent implements OnInit {
           isGroupBy: true
         }),
         this.fb.group({
-          appliances: ['Revers Cylce Air Con 5k V'],
+          appliances: ['Revers Cylce Air Con 5kW'],
           qty: [1],
           power: [1200],
           summerTimeHrs: [6],
