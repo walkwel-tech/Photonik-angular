@@ -1,69 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { PeriodicElement, SolarBenefitsAndAdditionalTips } from 'src/app/interfaces/table';
-
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {
-    appliances: { title: 'Kitchen General', value: ['Dishwasher', 'Fridge', 'Chest Freezer'] },
-    qty: { title: '', value: ['1', '2', '3'] },
-    power: { title: '', value: ['1200', '150', '150'] },
-    summerTimeHrs: { title: '', value: ['1', '12', '12'] },
-    summerEnergyKwh: { title: '', value: ['0.6', '1.8', '1.8'] },
-    winterTimeKwh: { title: '', value: ['1', '10', '10'] },
-    winterEnergyKwh: { title: '', value: ['0.6', '1.5', '1.5'] },
-    annualEnergyKwh: { title: '', value: ['0.6', '1.65', '1.65'] },
-    menu: { value: ['more_vert', 'more_vert', 'more_vert'] }
-  },
-  {
-    appliances: { title: 'Cooking', value: ['Oven 1', 'frillnduction Cooktop Zone 4dge'] },
-    qty: { title: '', value: ['1', '2'] },
-    power: { title: '', value: ['3200', '2200'] },
-    summerTimeHrs: { title: '', value: ['0.5', '1'] },
-    summerEnergyKwh: { title: '', value: ['1.6', '2.2'] },
-    winterTimeKwh: { title: '', value: ['0.5', '1'] },
-    winterEnergyKwh: { title: '', value: ['0.6', '2.2'] },
-    annualEnergyKwh: { title: '', value: ['1.6', '1.65',] },
-    menu: { value: ['more_vert', 'more_vert'] }
-
-  },
-  {
-    appliances: { title: 'Cleaning / laundry', value: ['Washing Machine', 'Clothes Dryer'] },
-    qty: { title: '', value: ['1', '2'] },
-    power: { title: '', value: ['700', '700'] },
-    summerTimeHrs: { title: '', value: ['0.5', '1'] },
-    summerEnergyKwh: { title: '', value: ['1.6', '2.2'] },
-    winterTimeKwh: { title: '', value: ['0.5', '1'] },
-    winterEnergyKwh: { title: '', value: ['0.6', '2.2'] },
-    annualEnergyKwh: { title: '', value: ['1.6', '1.65',] },
-    menu: { value: ['more_vert', 'more_vert',] }
-
-  },
-  {
-    appliances: { title: 'Heating / hot water', value: ['Revers Cylce Air Con 5kW', 'Hydronic Heating', 'Hot Water Heat Pump'] },
-    qty: { title: '', value: ['1', '2', '7'] },
-    power: { title: '', value: ['1200', '3200', '550'] },
-    summerTimeHrs: { title: '', value: ['0.5', '1', '0.3'] },
-    summerEnergyKwh: { title: '', value: ['1.6', '2.2', '0.2'] },
-    winterTimeKwh: { title: '', value: ['0.5', '1', '6.2'] },
-    winterEnergyKwh: { title: '', value: ['0.6', '2.2', '6.2'] },
-    annualEnergyKwh: { title: '', value: ['1.6', '1.65', '5.2'] },
-    menu: { value: ['more_vert', 'more_vert', 'more_vert',] }
-
-  },
-  {
-    appliances: { title: 'Other', value: ['Lights LED'] },
-    qty: { title: '', value: ['4',] },
-    power: { title: '', value: ['10',] },
-    summerTimeHrs: { title: '', value: ['1',] },
-    summerEnergyKwh: { title: '', value: ['0.6',] },
-    winterTimeKwh: { title: '', value: ['1',] },
-    winterEnergyKwh: { title: '', value: ['0.6',] },
-    annualEnergyKwh: { title: '', value: ['0.6',] },
-    menu: { value: ['more_vert',] }
-  },
-
-];
 
 @Component({
   selector: 'app-table-used',
@@ -71,26 +9,36 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./table-used.component.scss']
 })
 export class TableUsedComponent implements OnInit {
+  @ViewChild(MatTable) table!: MatTable<any>;
   benefitsList: SolarBenefitsAndAdditionalTips | undefined;
-  displayedColumns: string[] = ['appliances', 'qty', 'power', 'summerTimeHrs', 'summerEnergyKwh', 'winterTimeKwh', 'winterEnergyKwh', 'annualEnergyKwh', 'menu'
+  tableDataSource!: MatTableDataSource<AbstractControl>;
+  displayedColumns: string[] = [
+    'appliances',
+    'qty',
+    'power',
+    'summerTimeHrs',
+    'summerEnergyKwh',
+    'winterTimeKwh',
+    'winterEnergyKwh',
+    'annualEnergyKwh',
+    'option'
   ];
-  dataSource = ELEMENT_DATA;
-  tableForm!: FormGroup;
-  constructor(private fb: FormBuilder) { }
+
+  tableForm: FormArray | undefined;
+  mainForm!: FormGroup;
+  summerEnergyTotal: number = 0;
+  winterEnergyTotal: number = 0;
+  annualEnergyTotal: number = 0;
+
+  constructor(private fb: FormBuilder,) { }
 
   ngOnInit(): void {
-    this.tableForm = this.fb.group({
-      appliances: this.fb.group({
-        kitchenGeneral: this.fb.array([])
-      }),
-      qty: new FormControl(''),
-      power: new FormControl(''),
-      summerTimeHrs: new FormControl(''),
-      summerEnergyKwh: new FormControl(''),
-      winterTimeKwh: new FormControl(''),
-      winterEnergyKwh: new FormControl(''),
-      annualEnergyKwh: new FormControl(''),
-    })
+
+    this.getRows()
+    this.tableDataSource = new MatTableDataSource(
+      (this.mainForm.get('tableRows') as FormArray).controls
+    );
+    this.onChanges();
     this.benefitsList = {
       benefits: [
         { title: 'They can help you estimate the size of the solar system you need.' },
@@ -105,14 +53,227 @@ export class TableUsedComponent implements OnInit {
       ]
     }
   }
-  onRemove() {
+  getRows() {
+    this.mainForm = this.fb.group({
+
+      tableRows: this.fb.array([
+        this.fb.group({
+          category: 'Kitchen General',
+          isGroupBy: true
+        }),
+        this.fb.group({
+          appliances: ['Dishwasher'],
+          qty: [1],
+          power: [1200],
+          summerTimeHrs: [1],
+          summerEnergyKwh: [],
+          winterTimeKwh: [1],
+          winterEnergyKwh: [],
+          annualEnergyKwh: [],
+          option: ['more_vert']
+
+        }),
+        this.fb.group({
+          appliances: ['Plate'],
+          qty: [1],
+          power: [150],
+          summerTimeHrs: [12],
+          summerEnergyKwh: [],
+          winterTimeKwh: [10],
+          winterEnergyKwh: [],
+          annualEnergyKwh: [],
+          option: ['more_vert']
+        }),
+        this.fb.group({
+          appliances: ['Chest Freezer'],
+          qty: [1],
+          power: [150],
+          summerTimeHrs: [12],
+          summerEnergyKwh: [],
+          winterTimeKwh: [10],
+          winterEnergyKwh: [],
+          annualEnergyKwh: [],
+          option: ['more_vert']
+        }),
+        this.fb.group({
+          category: ' Cooking',
+          isGroupBy: true
+        }),
+        this.fb.group({
+          appliances: ['Oven 1'],
+          qty: [1],
+          power: [3200],
+          summerTimeHrs: [0.5],
+          summerEnergyKwh: [],
+          winterTimeKwh: [0.5],
+          winterEnergyKwh: [],
+          annualEnergyKwh: [],
+          option: ['more_vert']
+        }),
+        this.fb.group({
+          appliances: ['Frilnducation Cooktop Zone 4dge'],
+          qty: [1],
+          power: [2200],
+          summerTimeHrs: [1],
+          summerEnergyKwh: [],
+          winterTimeKwh: [1],
+          winterEnergyKwh: [],
+          annualEnergyKwh: [],
+          option: ['more_vert']
+        }),
+        this.fb.group({
+          category: 'Cleaning / Laundry',
+          isGroupBy: true
+        }),
+        this.fb.group({
+          appliances: ['Washing Machine'],
+          qty: [1],
+          power: [700],
+          summerTimeHrs: [0.8],
+          summerEnergyKwh: [],
+          winterTimeKwh: [0.8],
+          winterEnergyKwh: [],
+          annualEnergyKwh: [],
+          option: ['more_vert']
+        }),
+        this.fb.group({
+          appliances: ['Clothes Dryer'],
+          qty: [1],
+          power: [700],
+          summerTimeHrs: [],
+          summerEnergyKwh: [],
+          winterTimeKwh: [1],
+          winterEnergyKwh: [],
+          annualEnergyKwh: [],
+          option: ['more_vert']
+        }),
+        this.fb.group({
+          category: 'Heating / Hot Water',
+          isGroupBy: true
+        }),
+        this.fb.group({
+          appliances: ['Revers Cylce Air Con 5k V'],
+          qty: [1],
+          power: [1200],
+          summerTimeHrs: [6],
+          summerEnergyKwh: [],
+          winterTimeKwh: [2],
+          winterEnergyKwh: [],
+          annualEnergyKwh: [],
+          option: ['more_vert']
+        }),
+        this.fb.group({
+          appliances: ['Hydronic Heating'],
+          qty: [1],
+          power: [3200],
+          summerTimeHrs: [],
+          summerEnergyKwh: [],
+          winterTimeKwh: [4],
+          winterEnergyKwh: [],
+          annualEnergyKwh: [],
+          option: ['more_vert']
+        }),
+        this.fb.group({
+          appliances: ['Hot water heat pump'],
+          qty: [1],
+          power: [550],
+          summerTimeHrs: [4],
+          summerEnergyKwh: [],
+          winterTimeKwh: [6],
+          winterEnergyKwh: [],
+          annualEnergyKwh: [],
+          option: ['more_vert']
+        }),
+        this.fb.group({
+          category: 'Other',
+          isGroupBy: true
+        }),
+        this.fb.group({
+          appliances: ['Light led'],
+          qty: [4],
+          power: [10],
+          summerTimeHrs: [4],
+          summerEnergyKwh: [],
+          winterTimeKwh: [5],
+          winterEnergyKwh: [],
+          annualEnergyKwh: [],
+          option: ['more_vert']
+        }),
+      ]),
+    });
+  }
+
+  isGroup(index: any, item: any): boolean {
+    return item.value.isGroupBy;
+  }
+  onIncrement(event: string, row: any, index: number) {
+    console.log("roww", row);
+
+    let a = this.mainForm.get('tableRows') as FormArray;
+    if (event === 'add') {
+      a.controls[index].patchValue({
+        qty: row.value.qty += 1
+      })
+    } else {
+      if (row.value.qty > 1)
+        a.controls[index].patchValue({
+          qty: row.value.qty -= 1
+        })
+    }
+    this.onChanges()
+  }
+
+  createItem(): FormGroup {
+    return this.fb.group({
+      appliances: [''],
+      qty: [1],
+      power: [1500],
+      summerTimeHrs: [1],
+      summerEnergyKwh: [],
+      winterTimeKwh: [1],
+      winterEnergyKwh: [],
+      annualEnergyKwh: [],
+      option: ['more_vert']
+    });
+  }
+
+  addRow(index: number) {
+
+    const items = this.mainForm.get('tableRows') as FormArray;
+    items.insert(index + 1, this.createItem())
+    // items.push(this.createItem());
+    this.table.renderRows();
+  }
+  deleteRow(index: number) {
+    const items = this.mainForm.get('tableRows') as FormArray;
+    items.removeAt(index)
+    this.table.renderRows()
+  }
+
+  onChanges() {
+
+    const table = this.mainForm.get('tableRows') as FormArray;
+    this.summerEnergyTotal = table.controls.filter((t => !t.value.category))
+      .map(
+        (t: any) =>
+          (t.value.qty * t.value.power * t.value.summerTimeHrs) / 1000
+      )
+      .reduce((acc: any, value: any) => acc + value, 0);
+
+    this.winterEnergyTotal = table.controls.filter((t => !t.value.category))
+      .map(
+        (t: any) =>
+          (t.value.qty * t.value.power * t.value.winterTimeKwh) / 1000
+      )
+      .reduce((acc: any, value: any) => acc + value, 0);
+
+    this.annualEnergyTotal = table.controls.filter((t => !t.value.category))
+      .map(
+        (t: any) =>
+          (((t.value.qty * t.value.power * t.value.summerTimeHrs) / 1000) +
+            ((t.value.qty * t.value.power * t.value.winterTimeKwh) / 1000)) / 2
+      )
+      .reduce((acc: any, value: any) => acc + value, 0);
 
   }
-  onAdd() {
-
-  }
-  getTotalCost() {
-    return 22;
-  }
-
 }
